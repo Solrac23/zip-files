@@ -11,12 +11,12 @@
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
-    "@types/adm-zip": "^0.5.7",
+    "@types/archiver": "^6.0.3",
     "@types/node": "^24.1.0",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "adm-zip": "^0.5.16"
+    "archiver": "^7.0.1"
   }
 }
