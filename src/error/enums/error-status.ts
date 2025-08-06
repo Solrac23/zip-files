@@ -1,0 +1,5 @@
+export enum ErrorStatus{
+  DIRECTORY_EMPTY,
+  DIRECTORY_NOT_ABSOLUTE,
+  DIRECTORY_NOT_FOUND
+}
