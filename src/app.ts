@@ -6,9 +6,11 @@
  * @version 1.0.0
  */
 
+import { IOError } from './error/io-error';
 import { OsType } from './model/os-type';
 import { PathFile } from './model/path-file';
 import { CheckPlatformService } from './services/check-platform-service';
+import { FileService } from './services/file-service';
 import { PathFileService } from './services/path-file-service';
 
 /**
@@ -20,11 +22,10 @@ import { PathFileService } from './services/path-file-service';
 async function main(): Promise<void> {
 	const osType = new OsType();
 	let pathFileService: PathFileService;
+	const fileService: FileService = new FileService();
 	const osHomedir = osType.getOsHomedir();
 
-	const list = osType
-		.getPathfile()
-		.add(new PathFile('', osHomedir, 'Downloads'));
+	const list = osType.getPathfile().add(new PathFile(osHomedir, 'Downloads'));
 
 	for (const path of list) {
 		try {
@@ -36,11 +37,19 @@ async function main(): Promise<void> {
 			if (await pathFileService.isDirectoryExists(join)) {
 				path.addPath(join);
 			}
-			console.log(path.getPath());
+			await fileService.readFilesPath(path.getPath());
 		} catch (err) {
 			console.error(err);
 		}
 	}
 }
 
-main();
+main().catch(err => {
+	if (err instanceof IOError) {
+		console.error(err.name, err.message);
+	} else if (err instanceof Error) {
+		console.error(err.name, err.message);
+	} else {
+		console.error(err.message);
+	}
+});
