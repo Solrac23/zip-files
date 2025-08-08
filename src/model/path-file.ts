@@ -1,20 +1,18 @@
-import { createReadStream } from 'node:fs';
-
 export class PathFile {
 	private path: Array<string>;
-	private file: string | undefined;
+	private file: Array<string>;
 
-	public constructor(file?: string, ...path: Array<string>) {
-		this.file = file;
+	public constructor(...path: Array<string>) {
+		this.file = [] as string[];
 		this.path = path;
 	}
 
-	public getFile(): string | undefined {
+	public getFile(): Array<string> {
 		return this.file;
 	}
 
 	public setFile(file: string): void {
-		this.file = file;
+		this.file.push(file);
 	}
 
 	public getPath(): Array<string> {
@@ -23,11 +21,5 @@ export class PathFile {
 
 	public addPath(path: string): void {
 		this.path.push(path);
-	}
-
-	public async readPathFile(files: string[]): Promise<void> {
-		const readFiles = files.forEach(file => {
-			createReadStream(file, { encoding: 'utf-8' });
-		});
 	}
 }
