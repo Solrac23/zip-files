@@ -11,7 +11,7 @@ export class PathFileService {
 	}
 
 	public removePaths(arr?: Array<string>): void {
-		if (arr?.length === 0 || arr?.length === undefined) {
+		if (!arr?.length || arr?.length === 0) {
 			throw new IOError({
 				name: ErrorStatus.DIRECTORY_EMPTY, 
 				message: 'Diretory is not send'
@@ -44,7 +44,7 @@ export class PathFileService {
 		cb?: (arr?: Array<string>) => void
 	): string {
 		
-		if(paths.length === 0){
+		if(!paths || paths.length === 0){
 			throw new IOError({
 				name: ErrorStatus.DIRECTORY_NOT_FOUND,
 				message: 'Directory not found'
