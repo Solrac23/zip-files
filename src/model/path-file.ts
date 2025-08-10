@@ -11,8 +11,8 @@ export class PathFile {
 		return this.file;
 	}
 
-	public setFile(file: string): void {
-		this.file.push(file);
+	public setFile(...file: string[]): void {
+		this.file.push(...file);
 	}
 
 	public getPath(): Array<string> {
