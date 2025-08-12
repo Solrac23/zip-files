@@ -1,18 +1,11 @@
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
-import type { IFileService } from '../interface/i-file-service';
 
 export class PathFile {
 	private paths: Array<string>;
 	private files: Array<string>;
 
-	private fileService: IFileService;
-
-	public constructor(
-		fileService: IFileService,
-		...initilaPaths: Array<string>
-	) {
-		this.fileService = fileService;
+	public constructor(...initilaPaths: Array<string>) {
 		this.paths = initilaPaths || Array<string>;
 		this.files = [] as string[];
 	}
@@ -39,26 +32,26 @@ export class PathFile {
 		this.files.push(...newFiles);
 	}
 
-	public async loadFilesFromPath(index: number = 0): Promise<void> {
-		if (index < 0 || index >= this.paths.length) {
-			throw new IOError({
-				name: ErrorStatus.INVALID_INDEX,
-				message: `Invalid path index: ${index}`,
-			});
-		}
-		const dir = this.paths[index];
-		const loadedFiles = await this.fileService.readFilesFromDirectory(dir);
-		this.addFiles(...loadedFiles);
-	}
+	// public async loadFilesFromPath(index: number = 0): Promise<void> {
+	// 	if (index < 0 || index >= this.paths.length) {
+	// 		throw new IOError({
+	// 			name: ErrorStatus.INVALID_INDEX,
+	// 			message: `Invalid path index: ${index}`,
+	// 		});
+	// 	}
+	// 	const dir = this.paths[index];
+	// 	const loadedFiles = await this.fileService.readFilesFromDirectory(dir);
+	// 	this.addFiles(...loadedFiles);
+	// }
 
-	public async createWriteStream(fileName: string, pathIndex: number = 0) {
-		if (pathIndex < 0 || pathIndex >= this.paths.length) {
-			throw new IOError({
-				name: ErrorStatus.INVALID_INDEX,
-				message: `Invalid path index: ${pathIndex}`,
-			});
-		}
-		const dir = this.paths[pathIndex];
-		return this.fileService.createWriteStreamForFile(dir, fileName);
-	}
+	// public async createWriteStream(fileName: string, pathIndex: number = 0) {
+	// 	if (pathIndex < 0 || pathIndex >= this.paths.length) {
+	// 		throw new IOError({
+	// 			name: ErrorStatus.INVALID_INDEX,
+	// 			message: `Invalid path index: ${pathIndex}`,
+	// 		});
+	// 	}
+	// 	const dir = this.paths[pathIndex];
+	// 	return this.fileService.createWriteStreamForFile(dir, fileName);
+	// }
 }
