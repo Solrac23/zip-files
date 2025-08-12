@@ -4,7 +4,7 @@ import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
 import type { IOsType } from '../interface/i-os-type';
 
-export class PathFileService {
+export class PathService {
 	private osType: IOsType;
 	public constructor(osType: IOsType) {
 		this.osType = osType;
@@ -13,8 +13,8 @@ export class PathFileService {
 	public removePaths(arr?: Array<string>): void {
 		if (!arr?.length || arr?.length === 0) {
 			throw new IOError({
-				name: ErrorStatus.DIRECTORY_EMPTY, 
-				message: 'Diretory is not send'
+				name: ErrorStatus.DIRECTORY_EMPTY,
+				message: 'Diretory is not send',
 			});
 		}
 
@@ -43,12 +43,11 @@ export class PathFileService {
 		paths: Array<string>,
 		cb?: (arr?: Array<string>) => void
 	): string {
-		
-		if(!paths || paths.length === 0){
+		if (!paths || paths.length === 0) {
 			throw new IOError({
 				name: ErrorStatus.DIRECTORY_NOT_FOUND,
-				message: 'Directory not found'
-			})
+				message: 'Directory not found',
+			});
 		}
 
 		const isWindows: string =
@@ -59,7 +58,7 @@ export class PathFileService {
 		if (pathAbsolute === '') {
 			throw new IOError({
 				name: ErrorStatus.DIRECTORY_NOT_ABSOLUTE,
-				message: 'Directory not absolute'
+				message: 'Directory not absolute',
 			});
 		}
 
