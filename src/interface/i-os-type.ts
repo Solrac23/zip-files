@@ -1,3 +1,3 @@
 export interface IOsType {
-	getOsPlatform(): NodeJS.Platform;
+	getOsPlatform(): Readonly<NodeJS.Platform>;
 }
