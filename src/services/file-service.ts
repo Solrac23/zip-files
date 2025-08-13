@@ -4,17 +4,11 @@ import { join } from 'node:path';
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
 import type { IFileService } from '../interface/i-file-service';
-import { PathFile } from '../model/path-file';
 
 export class FileService implements IFileService {
-	private pathFile: PathFile;
-
-	public constructor() {
-		this.pathFile = new PathFile();
-	}
 	/**
 	 * @method readFilesFromDirectory metodo responsavel por fazer a leitura do caminho
-	 * @param dirPath Um atributo que aceita um array de diretorios e ler os seus arquivos
+	 * @param dir Um atributo que aceita um array de diretorios e ler os seus arquivos
 	 * @returns Promise<string[]>
 	 */
 	public async readFilesFromDirectory(dir: string): Promise<string[]> {
