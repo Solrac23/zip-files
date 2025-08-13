@@ -31,27 +31,4 @@ export class PathFile {
 	public addFiles(...newFiles: string[]): void {
 		this.files.push(...newFiles);
 	}
-
-	// public async loadFilesFromPath(index: number = 0): Promise<void> {
-	// 	if (index < 0 || index >= this.paths.length) {
-	// 		throw new IOError({
-	// 			name: ErrorStatus.INVALID_INDEX,
-	// 			message: `Invalid path index: ${index}`,
-	// 		});
-	// 	}
-	// 	const dir = this.paths[index];
-	// 	const loadedFiles = await this.fileService.readFilesFromDirectory(dir);
-	// 	this.addFiles(...loadedFiles);
-	// }
-
-	// public async createWriteStream(fileName: string, pathIndex: number = 0) {
-	// 	if (pathIndex < 0 || pathIndex >= this.paths.length) {
-	// 		throw new IOError({
-	// 			name: ErrorStatus.INVALID_INDEX,
-	// 			message: `Invalid path index: ${pathIndex}`,
-	// 		});
-	// 	}
-	// 	const dir = this.paths[pathIndex];
-	// 	return this.fileService.createWriteStreamForFile(dir, fileName);
-	// }
 }
