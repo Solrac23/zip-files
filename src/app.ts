@@ -11,17 +11,19 @@ import { join } from 'node:path';
 import { IOError } from './error/io-error';
 import type { ICompressionService } from './interface/i-compression-service';
 import type { IFileService } from './interface/i-file-service';
-import { CompressionFileService } from './model/compression-file-service';
 import { OsType } from './model/os-type';
 import { PathFile } from './model/path-file';
 import { CheckPlatformService } from './services/check-platform-service';
+import { CompressionFileService } from './services/compression-file-service';
 import { FileService } from './services/file-service';
 import { PathService } from './services/path-service';
 
 async function main(): Promise<void> {
 	const osType = new OsType();
 	const fileService: IFileService = new FileService();
-	const compressionService: ICompressionService = new CompressionFileService();
+	const compressionService: ICompressionService = new CompressionFileService(
+		new FileService()
+	);
 	const osHomedir = osType.getOsHomedir();
 
 	const initialPathFile = new PathFile(osHomedir, 'Downloads');
@@ -68,14 +70,12 @@ async function main(): Promise<void> {
 
 			if (filesToCompress.length > 0) {
 				const d: Date = new Date();
-				const zipName = `compactado_${d.getDate()}-${d.getMonth().toString()}-${d.getFullYear()}.zip`;
+				const zipName = `compactado_${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}.zip`;
 				try {
-					const output = await fileService.createWriteStreamForFile(
-						dir,
-						zipName
-					);
-					// await compressionService.compressFiles()
-				} catch (err) {}
+					await compressionService.compressFiles(dir, filesToCompress, zipName);
+				} catch (err) {
+					console.error(err);
+				}
 			}
 		} catch (err) {
 			console.error(err);
