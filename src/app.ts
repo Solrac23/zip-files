@@ -6,38 +6,77 @@
  * @version 1.0.0
  */
 
+import { stat } from 'node:fs/promises';
+import { join } from 'node:path';
 import { IOError } from './error/io-error';
+import type { ICompressionService } from './interface/i-compression-service';
+import type { IFileService } from './interface/i-file-service';
+import { CompressionFileService } from './model/compression-file-service';
 import { OsType } from './model/os-type';
 import { PathFile } from './model/path-file';
 import { CheckPlatformService } from './services/check-platform-service';
 import { FileService } from './services/file-service';
-import { PathFileService } from './services/path-file-service';
-
-/**
- * Se o arquivo existir, preciso ler o arquivo e verificar a ultima modificação.
- * Se a ultima modificação for menor que 3 meses, compactar os arquivo.
- * Se a ultima modificação for maior que 3 meses, não compactar os arquivos.
- */
+import { PathService } from './services/path-service';
 
 async function main(): Promise<void> {
 	const osType = new OsType();
-	let pathFileService: PathFileService;
-	const fileService: FileService = new FileService();
+	const fileService: IFileService = new FileService();
+	const compressionService: ICompressionService = new CompressionFileService();
 	const osHomedir = osType.getOsHomedir();
 
-	const list = osType.getPathfile().add(new PathFile(osHomedir, 'Downloads'));
+	const initialPathFile = new PathFile(osHomedir, 'Downloads');
+	osType.addPathFile(initialPathFile);
 
-	for (const path of list) {
+	const pathFileList: PathFile[] = Array.from(osType.getPathfile());
+
+	for (const pathFile of pathFileList) {
 		try {
-			const way = path.getPath();
+			const way = pathFile.getPaths();
 
-			pathFileService = new PathFileService(new CheckPlatformService());
-			const join = pathFileService.safeJoin(way, pathFileService.removePaths);
+			const pathService = new PathService(new CheckPlatformService());
+			const joinedPath = pathService.safeJoin(
+				way as string[],
+				pathService.removePaths
+			);
 
-			if (await pathFileService.isDirectoryExists(join)) {
-				path.addPath(join);
+			if (await pathService.isDirectoryExists(joinedPath)) {
+				pathFile.addPaths(joinedPath);
 			}
-			await fileService.readFilesPath(path.getPath());
+
+			const readFiles = await fileService.readFilesFromDirectory(joinedPath);
+			pathFile.addFiles(...readFiles);
+
+			const threeMonthosAgo: Date = new Date();
+			threeMonthosAgo.setMonth(threeMonthosAgo.getMonth() - 3);
+			const dir = pathFile.getPaths()[0];
+			const fileNames = pathFile.getFiles();
+			const filesToCompress: string[] = [];
+
+			for (const fileName of fileNames) {
+				const fullFilePath = join(dir, fileName);
+				const fileStats = await stat(fullFilePath);
+				const lastModified = fileStats.mtime;
+
+				if (lastModified < threeMonthosAgo) {
+					filesToCompress.push(fileName);
+				} else {
+					console.warn(
+						`Arquivo ${fileName} nao compactado: modificado ha mais de 3 meses`
+					);
+				}
+			}
+
+			if (filesToCompress.length > 0) {
+				const d: Date = new Date();
+				const zipName = `compactado_${d.getDate()}-${d.getMonth().toString()}-${d.getFullYear()}.zip`;
+				try {
+					const output = await fileService.createWriteStreamForFile(
+						dir,
+						zipName
+					);
+					// await compressionService.compressFiles()
+				} catch (err) {}
+			}
 		} catch (err) {
 			console.error(err);
 		}
