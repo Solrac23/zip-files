@@ -8,7 +8,7 @@ import type { IFileService } from '../interface/i-file-service';
 export class FileService implements IFileService {
 	/**
 	 * @method readFilesFromDirectory metodo responsavel por fazer a leitura do caminho
-	 * @param dir Um atributo que aceita um array de diretorios e ler os seus arquivos
+	 * @param dir Um atributo que aceita uma string de diretorio e ler os seus arquivos
 	 * @returns Promise<string[]>
 	 */
 	public async readFilesFromDirectory(dir: string): Promise<string[]> {
@@ -44,6 +44,12 @@ export class FileService implements IFileService {
 		return files.map(file => file.name);
 	}
 
+	/**
+	 * @method createWriteStreamForFile metodo responsavel por criar o arquivo de saida
+	 * @param dir Um atributo que aceita uma string de diretorio e ler os seus arquivos
+	 * @param fileName Nome do arquivo zip
+	 * @returns Promise<WriteSream>
+	 */
 	public async createWriteStreamForFile(
 		dir: string,
 		fileName: string
@@ -67,4 +73,8 @@ export class FileService implements IFileService {
 			});
 		}
 	}
+
+	/**
+	 * Criar um metodo para remover os arquivos depois de zipado
+	 */
 }
