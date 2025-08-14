@@ -13,6 +13,12 @@ export class CompressionFileService implements ICompressionService {
 		this.fileService = fileService;
 	}
 
+	/**
+	 * Metodo responsavel por comprimir todos os aquivos e pastas de um diretorio
+	 * @param dir Diretorio do arquivo
+	 * @param files Arquivos do diretorio
+	 * @param outputZipPath Arquivo de saida
+	 */
 	public async compressFiles(
 		dir: string,
 		files: string[],
