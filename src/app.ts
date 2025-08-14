@@ -61,6 +61,7 @@ async function main(): Promise<void> {
 
 				if (lastModified < threeMonthosAgo) {
 					filesToCompress.push(fileName);
+					console.log(`Compactando arquivo: ${fileName}`);
 				} else {
 					console.warn(
 						`Arquivo ${fileName} nao compactado: modificado ha mais de 3 meses`
