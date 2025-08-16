@@ -36,7 +36,10 @@ export class CompressionFileService implements ICompressionService {
 				dir,
 				outputZipPath
 			);
-			const archive = archiver('zip', { zlib: { level: 9 } });
+			const archive = archiver('zip', {
+				zlib: { level: 9 },
+				comment: 'Arquivos zipados',
+			});
 
 			output.on('error', err => {
 				throw new Error(err.message);
