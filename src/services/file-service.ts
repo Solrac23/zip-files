@@ -1,5 +1,5 @@
 import { createWriteStream, type Dirent, type WriteStream } from 'node:fs';
-import { readdir } from 'node:fs/promises';
+import { readdir, rm, stat, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
@@ -9,7 +9,7 @@ export class FileService implements IFileService {
 	/**
 	 * @method readFilesFromDirectory metodo responsavel por fazer a leitura do caminho
 	 * @param dir Um atributo que aceita uma string de diretorio e ler os seus arquivos
-	 * @returns Promise<string[]>
+	 * @return Promise<string[]>
 	 */
 	public async readFilesFromDirectory(dir: string): Promise<string[]> {
 		if (!dir) {
@@ -48,7 +48,7 @@ export class FileService implements IFileService {
 	 * @method createWriteStreamForFile metodo responsavel por criar o arquivo de saida
 	 * @param dir Um atributo que aceita uma string de diretorio e ler os seus arquivos
 	 * @param fileName Nome do arquivo zip
-	 * @returns Promise<WriteSream>
+	 * @return Promise<WriteSream>
 	 */
 	public async createWriteStreamForFile(
 		dir: string,
@@ -63,7 +63,10 @@ export class FileService implements IFileService {
 
 		const fullPath = join(dir, fileName);
 		try {
-			const stream: WriteStream = createWriteStream(fullPath);
+			const stream: WriteStream = createWriteStream(fullPath, {
+				encoding: 'utf-8',
+				highWaterMark: 125 * 1024, // 125KB chunks
+			});
 			return stream;
 		} catch (err) {
 			throw new IOError({
@@ -76,5 +79,45 @@ export class FileService implements IFileService {
 
 	/**
 	 * Criar um metodo para remover os arquivos depois de zipado
+	 * @param dir Diretorio onde estao os arquivos
+	 * @param files Array de arquivos a serem removidos
+	 * @return Promise<void>
 	 */
+	public async deleteFilesFromDirectory(
+		dir: string,
+		files: Array<string>
+	): Promise<void> {
+		if (!dir) {
+			throw new IOError({
+				name: ErrorStatus.DIRECTORY_EMPTY,
+				message: 'Directory is not exist or empty',
+			});
+		}
+		if (!files || files.length === 0) {
+			throw new IOError({
+				name: ErrorStatus.FILES_NOT_FOUND,
+				message: `Files not found on directory ${dir}`,
+			});
+		}
+
+		try {
+			files.forEach(async file => {
+				const fullPath = join(dir, file);
+				const fileStat = await stat(fullPath);
+
+				fileStat.isDirectory()
+					? rm(fullPath, { recursive: true, force: true })
+					: unlink(fullPath);
+			});
+
+			console.log('Directories or files deleted sucessfully');
+		} catch (err) {
+			if (err instanceof IOError) {
+				throw err;
+			} else if (err instanceof Error) {
+				console.error('Error deleting file: ', err.message);
+				console.error('Stack trace: ', err.stack);
+			}
+		}
+	}
 }
