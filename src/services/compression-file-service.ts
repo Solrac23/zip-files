@@ -67,7 +67,7 @@ export class CompressionFileService implements ICompressionService {
 			});
 
 			archive.on('error', err => {
-				throw err;
+				console.error(err.name, err.message, err.data);
 			});
 			archive.finalize();
 		} catch (err) {
