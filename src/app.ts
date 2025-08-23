@@ -74,10 +74,13 @@ async function main(): Promise<void> {
 				const zipName = `compactado_${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}.zip`;
 				try {
 					await compressionService.compressFiles(dir, filesToCompress, zipName);
+					await fileService.deleteFilesFromDirectory(dir, filesToCompress);
 				} catch (err) {
 					console.error(err);
 				}
 			}
+			console.log(pathFile.getPaths());
+			console.log('Process completed.');
 		} catch (err) {
 			console.error(err);
 		}
