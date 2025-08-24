@@ -39,7 +39,7 @@ $ npm start
 Para executar o programa na pasta certa terá que no aruivo principal `app.ts`, adicionar a pasta que deseja zipar os arquivos.
 ![initial Path File](./screenshots/image.png)
 
-O `osHomedir` executa a partir da basta raiz do usuário, ou seja, `C:\\User\<seu usuario>` ou `/home/<seu usuario>`.
+O `osHomedir` executa a partir da basta raiz do usuário, ou seja, `C:\\User\\<seu usuario>` ou `/home/<seu usuario>`.
 
 E nesta linha do código ![Path](./screenshots/image-1.png), o programa pega a pasta que vai executar o serviço.
 
