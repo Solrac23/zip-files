@@ -41,35 +41,39 @@ export class CompressionFileService implements ICompressionService {
 				comment: 'Arquivos zipados',
 			});
 
-			output.on('error', err => {
-				throw new Error(err.message);
-			});
+			await new Promise<void>((resolve, reject) => {
+				output.on('error', err => {
+					reject(new Error(err.message));
+				});
 
-			output.on('close', () => {
-				const bytes: number = archive.pointer() / 1024 / 1024;
-				const sizeFile: string = bytes.toFixed(1);
-				console.log(`Arquivos compactados em: ${dir}/${outputZipPath}`);
-				console.log(`${sizeFile} MB total bytes`);
-			});
+				output.on('close', () => {
+					const bytes: number = archive.pointer() / 1024 / 1024;
+					const sizeFile: string = bytes.toFixed(1);
+					console.log(`Arquivos compactados em: ${dir}/${outputZipPath}`);
+					console.log(`${sizeFile} MB total bytes`);
+					resolve();
+				});
 
-			archive.pipe(output);
-			for (const file of files) {
-				const fullPath = join(dir, file);
-				archive.file(fullPath, { name: file });
-			}
-
-			archive.on('warning', err => {
-				if (err.code === 'ENOENT') {
-					console.warn(err.message, err.data);
-				} else {
-					throw err;
+				archive.pipe(output);
+				for (const file of files) {
+					const fullPath = join(dir, file);
+					archive.file(fullPath, { name: file });
 				}
-			});
 
-			archive.on('error', err => {
-				console.error(err.name, err.message, err.data);
+				archive.on('warning', err => {
+					if (err.code === 'ENOENT') {
+						console.warn(err.message, err.data);
+					} else {
+						reject(err);
+					}
+				});
+
+				archive.on('error', err => {
+					console.error(err.name, err.message, err.data);
+					reject(err);
+				});
+				archive.finalize();
 			});
-			archive.finalize();
 		} catch (err) {
 			throw new IOError({
 				name: ErrorStatus.CROMPRESSION_FAILED,
