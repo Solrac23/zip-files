@@ -101,14 +101,18 @@ export class FileService implements IFileService {
 		}
 
 		try {
-			files.forEach(async file => {
-				const fullPath = join(dir, file);
-				const fileStat = await stat(fullPath);
+			await Promise.all(
+				files.map(async file => {
+					const fullPath = join(dir, file);
+					const fileStat = await stat(fullPath);
 
-				fileStat.isDirectory()
-					? rm(fullPath, { recursive: true, force: true })
-					: unlink(fullPath);
-			});
+					if (fileStat.isDirectory()) {
+						await rm(fullPath, { recursive: true, force: true });
+					} else {
+						await unlink(fullPath);
+					}
+				})
+			);
 
 			console.log('Directories or files deleted sucessfully');
 		} catch (err) {
