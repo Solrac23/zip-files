@@ -10,19 +10,11 @@ export class PathService {
 		this.osType = osType;
 	}
 
-	public removePaths(arr?: Array<string>): void {
-		if (!arr?.length || arr?.length === 0) {
-			throw new IOError({
-				name: ErrorStatus.DIRECTORY_EMPTY,
-				message: 'Diretory is not send',
-			});
-		}
-
-		for (let i: number = 0; i <= arr?.length; i++) {
-			arr?.shift();
-		}
-	}
-
+	/**
+	 * Verifica se um diretório existe.
+	 * @param path - O caminho do diretório a ser verificado.
+	 * @returns Uma Promise que resolve para true se o diretório existir, false caso contrário.
+	 */
 	public async isDirectoryExists(path: string): Promise<boolean> {
 		if (!isAbsolute(path)) {
 			console.error(`Path provied is not absolute: ${path}`);
@@ -39,10 +31,12 @@ export class PathService {
 		}
 	}
 
-	public safeJoin(
-		paths: Array<string>,
-		cb?: (arr?: Array<string>) => void
-	): string {
+	/**
+	 * Combina um array de caminhos em um único caminho absoluto.
+	 * @param paths - O array de caminhos a serem combinados.
+	 * @returns O caminho absoluto resultante.
+	 */
+	public safeJoin(paths: Array<string>): string {
 		if (!paths || paths.length === 0) {
 			throw new IOError({
 				name: ErrorStatus.DIRECTORY_NOT_FOUND,
@@ -62,9 +56,6 @@ export class PathService {
 			});
 		}
 
-		if (cb) {
-			cb(paths);
-		}
 		return pathAbsolute;
 	}
 }
