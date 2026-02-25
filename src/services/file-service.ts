@@ -5,7 +5,7 @@ import type { Logger } from 'winston';
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
 import type { IFileService } from '../interface/i-file-service';
-import { Log } from '../utils/logger';
+import { Log } from '../utils/log';
 
 export class FileService implements IFileService {
 	private logger: Logger;
