@@ -3,3 +3,4 @@ pnpm-lock.yaml
 biome.json
 .vscode/
 @types/
+logs/**
