@@ -3,7 +3,11 @@ import { IOError } from '../error/io-error';
 import type { PathFile } from '../model/path-file';
 
 export class PathRegistry {
-	private pathFiles: Set<PathFile> = new Set();
+	private pathFiles: Set<PathFile>;
+
+	public constructor() {
+		this.pathFiles = new Set();
+	}
 
 	public getPathFiles(): ReadonlySet<PathFile> {
 		return this.pathFiles;
