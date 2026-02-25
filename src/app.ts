@@ -17,7 +17,7 @@ import { CompressionFileService } from './services/compression-file-service';
 import { FileService } from './services/file-service';
 import { PathService } from './services/path-service';
 import { ArchiveOldFilesUseCase } from './use-cases/archive-old-files-use-case';
-import { Log } from './utils/logger';
+import { Log } from './utils/log';
 
 async function main(): Promise<void> {
 	// Setup Services (Injeção de dependência na Raíz)
