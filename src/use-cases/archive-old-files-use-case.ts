@@ -1,17 +1,22 @@
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
+import type { Logger } from 'winston';
 import type { ICompressionService } from '../interface/i-compression-service';
 import type { IFileService } from '../interface/i-file-service';
-import { PathRegistry } from '../repository/path-registry';
-import { PathService } from '../services/path-service';
+import type { PathRegistry } from '../repository/path-registry';
+import type { PathService } from '../services/path-service';
+import { Log } from '../utils/logger';
 
 export class ArchiveOldFilesUseCase {
+	private logger: Logger;
 	public constructor(
 		private pathRegistry: PathRegistry,
 		private pathService: PathService,
 		private fileService: IFileService,
 		private compressionService: ICompressionService
-	) {}
+	) {
+		this.logger = Log.logger();
+	}
 
 	public async execute(): Promise<void> {
 		const pathFileList = Array.from(this.pathRegistry.getPathFiles());
@@ -21,7 +26,7 @@ export class ArchiveOldFilesUseCase {
 				const dir = pathFile.getBasePath();
 
 				if (!(await this.pathService.isDirectoryExists(dir))) {
-					console.warn(`Diretório não encontrado: ${dir}`);
+					this.logger.warn(`Diretório não encontrado: ${dir}`);
 					continue;
 				}
 
@@ -41,9 +46,9 @@ export class ArchiveOldFilesUseCase {
 
 					if (lastModified < threeMonthsAgo) {
 						filesToCompress.push(fileName);
-						console.log(`Compactando arquivo: ${fileName}`);
+						// logger.info(`Compactando arquivo: ${fileName}`);
 					} else {
-						console.warn(
+						this.logger.warn(
 							`Arquivo ${fileName} nao compactado: modificado recentemente (menos de 3 meses)`
 						);
 					}
@@ -54,22 +59,22 @@ export class ArchiveOldFilesUseCase {
 					const zipName = `compactado_${d.getDate()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}.zip`;
 					try {
 						await this.compressionService.compressFiles(
-                            dirPath,
-                            filesToCompress,
-                            zipName
-                        );
-						await this.fileService.deleteFilesFromDirectory(
-                            dirPath,
-                            filesToCompress
-                        );
+							dirPath,
+							filesToCompress,
+							zipName
+						);
+						// await this.fileService.deleteFilesFromDirectory(
+						//     dirPath,
+						//     filesToCompress
+						// );
 					} catch (err) {
-						console.error(err);
+						this.logger.error(err);
 					}
 				}
-				console.log(pathFile.getBasePath());
-				console.log('Process completed.');
+				this.logger.info(`${pathFile.getBasePath()}`);
+				this.logger.info('Process completed.\n');
 			} catch (err) {
-				console.error(err);
+				this.logger.error(err);
 			}
 		}
 	}

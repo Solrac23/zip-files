@@ -17,6 +17,7 @@ import { CompressionFileService } from './services/compression-file-service';
 import { FileService } from './services/file-service';
 import { PathService } from './services/path-service';
 import { ArchiveOldFilesUseCase } from './use-cases/archive-old-files-use-case';
+import { Log } from './utils/logger';
 
 async function main(): Promise<void> {
 	// Setup Services (Injeção de dependência na Raíz)
@@ -32,8 +33,10 @@ async function main(): Promise<void> {
 	// Configuração inicial de Estado ("Downloads" na HomeDir)
 	const osHomedir = osType.getOsHomedir();
 	const downloadsAbsolutePath = pathService.safeJoin([osHomedir, 'Downloads']);
-	const initialPathFile = new PathFile(downloadsAbsolutePath);
-	pathRegistry.addPathFile(initialPathFile);
+	pathRegistry.addPathFile(new PathFile(downloadsAbsolutePath));
+
+	const documentsAbsolutePath = pathService.safeJoin([osHomedir, 'Documents']);
+	pathRegistry.addPathFile(new PathFile(documentsAbsolutePath));
 
 	// Iniciar a aplicação conectando dependências usando DIP
 	const archiveUseCase = new ArchiveOldFilesUseCase(
@@ -47,11 +50,12 @@ async function main(): Promise<void> {
 }
 
 main().catch(err => {
+	const logger = Log.logger();
 	if (err instanceof IOError) {
-		console.error(err.name, err.message);
+		logger.error(`${err.name} ${err.message}`);
 	} else if (err instanceof Error) {
-		console.error(err.name, err.message);
+		logger.error(`${err.name} ${err.message}`);
 	} else {
-		console.error(err);
+		logger.error(err);
 	}
 });

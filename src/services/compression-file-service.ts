@@ -1,16 +1,20 @@
 // biome-ignore assist/source/organizeImports: <false>
 import archiver from 'archiver';
 import { join } from 'node:path';
+import type { Logger } from 'winston';
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
 import type { ICompressionService } from '../interface/i-compression-service';
 import type { IFileService } from '../interface/i-file-service';
+import { Log } from '../utils/logger';
 
 export class CompressionFileService implements ICompressionService {
+	private logger: Logger;
 	private fileService: IFileService;
 
 	public constructor(fileService: IFileService) {
 		this.fileService = fileService;
+		this.logger = Log.logger();
 	}
 
 	/**
@@ -49,27 +53,28 @@ export class CompressionFileService implements ICompressionService {
 				output.on('close', () => {
 					const bytes: number = archive.pointer() / 1024 / 1024;
 					const sizeFile: string = bytes.toFixed(1);
-					console.log(`Arquivos compactados em: ${dir}/${outputZipPath}`);
-					console.log(`${sizeFile} MB total bytes`);
+					this.logger.info(`Arquivos compactados em: ${dir}/${outputZipPath}`);
+					this.logger.info(`${sizeFile} MB total bytes`);
 					resolve();
 				});
 
 				archive.pipe(output);
 				for (const file of files) {
 					const fullPath = join(dir, file);
+					this.logger.info(`Compactando arquivo: ${fullPath}`);
 					archive.file(fullPath, { name: file });
 				}
 
 				archive.on('warning', err => {
 					if (err.code === 'ENOENT') {
-						console.warn(err.message, err.data);
+						this.logger.warn(err.message, { data: err.data });
 					} else {
 						reject(err);
 					}
 				});
 
 				archive.on('error', err => {
-					console.error(err.name, err.message, err.data);
+					this.logger.error(`${err.name} ${err.message}`, { data: err.data });
 					reject(err);
 				});
 				archive.finalize();

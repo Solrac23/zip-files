@@ -1,13 +1,17 @@
 import { access, constants } from 'node:fs/promises';
 import { isAbsolute, join, sep, win32 } from 'node:path';
+import type { Logger } from 'winston';
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
 import type { IOsType } from '../interface/i-os-type';
+import { Log } from '../utils/logger';
 
 export class PathService {
 	private osType: IOsType;
+	private logger: Logger;
 	public constructor(osType: IOsType) {
 		this.osType = osType;
+		this.logger = Log.logger();
 	}
 
 	/**
@@ -17,14 +21,14 @@ export class PathService {
 	 */
 	public async isDirectoryExists(path: string): Promise<boolean> {
 		if (!isAbsolute(path)) {
-			console.error(`Path provied is not absolute: ${path}`);
+			this.logger.error(`Path provied is not absolute: ${path}`);
 			return false;
 		}
 		try {
 			await access(path, constants.F_OK);
 			return true;
 		} catch (err: unknown) {
-			console.error(
+			this.logger.error(
 				`Error checking directory: ${err instanceof Error ? err.message : String(err)}`
 			);
 			return false;

@@ -1,11 +1,17 @@
 import { createWriteStream, type Dirent, type WriteStream } from 'node:fs';
 import { readdir, rm, stat, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
+import type { Logger } from 'winston';
 import { ErrorStatus } from '../error/enums/error-status';
 import { IOError } from '../error/io-error';
 import type { IFileService } from '../interface/i-file-service';
+import { Log } from '../utils/logger';
 
 export class FileService implements IFileService {
+	private logger: Logger;
+	public constructor() {
+		this.logger = Log.logger();
+	}
 	/**
 	 * @method readFilesFromDirectory metodo responsavel por fazer a leitura do caminho
 	 * @param dir Um atributo que aceita uma string de diretorio e ler os seus arquivos
@@ -114,13 +120,14 @@ export class FileService implements IFileService {
 				})
 			);
 
-			console.log('Directories or files deleted sucessfully');
+			this.logger.info('Directories or files deleted sucessfully');
 		} catch (err) {
 			if (err instanceof IOError) {
 				throw err;
 			} else if (err instanceof Error) {
-				console.error('Error deleting file: ', err.message);
-				console.error('Stack trace: ', err.stack);
+				this.logger.error(`Error deleting file: ${err.message}`, {
+					stack: err.stack,
+				});
 			}
 		}
 	}
