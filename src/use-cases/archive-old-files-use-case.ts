@@ -5,10 +5,16 @@ import type { ICompressionService } from '../interface/i-compression-service';
 import type { IFileService } from '../interface/i-file-service';
 import type { PathRegistry } from '../repository/path-registry';
 import type { PathService } from '../services/path-service';
-import { Log } from '../utils/logger';
+import { DateFormatter } from '../utils/date-formatter';
+import { Log } from '../utils/log';
 
 export class ArchiveOldFilesUseCase {
+	private readonly MONTHS_TO_KEEP: number = new Date().setMonth(
+		new Date().getMonth() - 3
+	);
 	private logger: Logger;
+	private dateFormatter: DateFormatter;
+
 	public constructor(
 		private pathRegistry: PathRegistry,
 		private pathService: PathService,
@@ -16,6 +22,7 @@ export class ArchiveOldFilesUseCase {
 		private compressionService: ICompressionService
 	) {
 		this.logger = Log.logger();
+		this.dateFormatter = new DateFormatter();
 	}
 
 	public async execute(): Promise<void> {
@@ -33,8 +40,6 @@ export class ArchiveOldFilesUseCase {
 				const readFiles = await this.fileService.readFilesFromDirectory(dir);
 				pathFile.addFiles(...readFiles);
 
-				const threeMonthsAgo: Date = new Date();
-				threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 				const dirPath = pathFile.getBasePath();
 				const fileNames = pathFile.getFiles();
 				const filesToCompress: string[] = [];
@@ -44,9 +49,8 @@ export class ArchiveOldFilesUseCase {
 					const fileStats = await stat(fullFilePath);
 					const lastModified = fileStats.mtime;
 
-					if (lastModified < threeMonthsAgo) {
+					if (lastModified.getTime() < this.MONTHS_TO_KEEP) {
 						filesToCompress.push(fileName);
-						// logger.info(`Compactando arquivo: ${fileName}`);
 					} else {
 						this.logger.warn(
 							`Arquivo ${fileName} nao compactado: modificado recentemente (menos de 3 meses)`
@@ -55,18 +59,17 @@ export class ArchiveOldFilesUseCase {
 				}
 
 				if (filesToCompress.length > 0) {
-					const d: Date = new Date();
-					const zipName = `compactado_${d.getDate()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}.zip`;
+					const zipName = `compactado_${this.dateFormatter.formatDate(new Date())}.zip`;
 					try {
 						await this.compressionService.compressFiles(
 							dirPath,
 							filesToCompress,
 							zipName
 						);
-						// await this.fileService.deleteFilesFromDirectory(
-						//     dirPath,
-						//     filesToCompress
-						// );
+						await this.fileService.deleteFilesFromDirectory(
+							dirPath,
+							filesToCompress
+						);
 					} catch (err) {
 						this.logger.error(err);
 					}
