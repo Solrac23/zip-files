@@ -22,6 +22,8 @@ export class CompressionFileService implements ICompressionService {
 	 * @param dir Diretorio do arquivo
 	 * @param files Arquivos do diretorio
 	 * @param outputZipPath Arquivo de saida
+	 * @returns {Promise<void>} Promise que sera resolvida quando todos os arquivos forem compactados
+	 * @throws {IOError} Se o diretorio, arquivo ou saida for invalido
 	 */
 	public async compressFiles(
 		dir: string,
@@ -51,7 +53,7 @@ export class CompressionFileService implements ICompressionService {
 				});
 
 				output.on('close', () => {
-					const bytes: number = archive.pointer() / 1024 / 1024;
+					const bytes: number = archive.pointer() / 10 ** 6;
 					const sizeFile: string = bytes.toFixed(1);
 					this.logger.info(`Arquivos compactados em: ${dir}/${outputZipPath}`);
 					this.logger.info(`${sizeFile} MB total bytes`);
