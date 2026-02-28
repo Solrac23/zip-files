@@ -1,9 +1,11 @@
 import type { Logger } from 'winston';
 import { createLogger, format, transports } from 'winston';
+import { DateFormatter } from './date-formatter';
 
 const { combine, timestamp, printf, colorize } = format;
 
 export class Log {
+	private static date: DateFormatter = new DateFormatter();
 	constructor() {}
 
 	public static logger(): Logger {
@@ -13,7 +15,13 @@ export class Log {
 				timestamp({
 					format: 'YYYY-MM-DD HH:mm:ss',
 				}),
-				format.errors({ stack: true })
+				format.errors({ stack: true }),
+				printf(({ level, message, timestamp, stack }) => {
+					if (stack) {
+						return `${timestamp} [${level}]: ${message}\n${stack}`;
+					}
+					return `${timestamp} [${level}]: ${message}`;
+				})
 			),
 			transports: [
 				new transports.Console({
@@ -27,9 +35,17 @@ export class Log {
 						})
 					),
 				}),
-				new transports.File({ filename: 'logs/error.log', level: 'error' }),
-				new transports.File({ filename: 'logs/warns.log', level: 'warn' }),
-				new transports.File({ filename: 'logs/combined.log' }),
+				new transports.File({
+					filename: `logs/error_${Log.date.formatDate(new Date())}.log`,
+					level: 'error',
+				}),
+				new transports.File({
+					filename: `logs/warns_${Log.date.formatDate(new Date())}.log`,
+					level: 'warn',
+				}),
+				new transports.File({
+					filename: `logs/combined_${Log.date.formatDate(new Date())}.log`,
+				}),
 			],
 		});
 	}
