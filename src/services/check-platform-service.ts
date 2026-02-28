@@ -8,6 +8,10 @@ export class CheckPlatformService implements IOsType {
 		this.platform = platform();
 	}
 
+	/**
+	 * Retorna a plataforma do sistema operacional.
+	 * @returns {NodeJS.Platform} Plataforma do sistema operacional.
+	 */
 	public getOsPlatform(): NodeJS.Platform {
 		return this.platform;
 	}
