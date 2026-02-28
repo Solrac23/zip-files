@@ -17,6 +17,8 @@ import { CompressionFileService } from './services/compression-file-service';
 import { FileService } from './services/file-service';
 import { PathService } from './services/path-service';
 import { ArchiveOldFilesUseCase } from './use-cases/archive-old-files-use-case';
+import { RemoveOldFilesLogsUseCase } from './use-cases/remove-old-files-logs-use-case';
+import { DateFormatter } from './utils/date-formatter';
 import { Log } from './utils/log';
 
 async function main(): Promise<void> {
@@ -47,6 +49,13 @@ async function main(): Promise<void> {
 	);
 
 	await archiveUseCase.execute();
+
+	const removeOldFilesLogsUseCase = new RemoveOldFilesLogsUseCase(
+		checkPlatformService,
+		new DateFormatter()
+	);
+
+	await removeOldFilesLogsUseCase.removeFilesLogs();
 }
 
 main().catch(err => {
