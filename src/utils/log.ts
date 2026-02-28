@@ -1,6 +1,6 @@
+import { DateFormatter } from '@/utils/date-formatter';
 import type { Logger } from 'winston';
 import { createLogger, format, transports } from 'winston';
-import { DateFormatter } from './date-formatter';
 
 const { combine, timestamp, printf, colorize } = format;
 

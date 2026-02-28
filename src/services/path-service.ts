@@ -1,10 +1,10 @@
+import { ErrorStatus } from '@/error/enums/error-status';
+import { IOError } from '@/error/io-error';
+import type { IOsType } from '@/interface/i-os-type';
+import { Log } from '@/utils/log';
 import { access, constants } from 'node:fs/promises';
 import { isAbsolute, join, sep, win32 } from 'node:path';
 import type { Logger } from 'winston';
-import { ErrorStatus } from '../error/enums/error-status';
-import { IOError } from '../error/io-error';
-import type { IOsType } from '../interface/i-os-type';
-import { Log } from '../utils/log';
 
 export class PathService {
 	private osType: IOsType;

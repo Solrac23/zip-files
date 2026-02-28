@@ -1,12 +1,12 @@
 // biome-ignore assist/source/organizeImports: <false>
+import { ErrorStatus } from '@/error/enums/error-status';
+import { IOError } from '@/error/io-error';
+import type { ICompressionService } from '@/interface/i-compression-service';
+import type { IFileService } from '@/interface/i-file-service';
+import { Log } from '@/utils/log';
 import archiver from 'archiver';
 import { join } from 'node:path';
 import type { Logger } from 'winston';
-import { ErrorStatus } from '../error/enums/error-status';
-import { IOError } from '../error/io-error';
-import type { ICompressionService } from '../interface/i-compression-service';
-import type { IFileService } from '../interface/i-file-service';
-import { Log } from '../utils/log';
 
 export class CompressionFileService implements ICompressionService {
 	private logger: Logger;

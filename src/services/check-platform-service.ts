@@ -1,5 +1,5 @@
+import type { IOsType } from '@/interface/i-os-type';
 import { platform } from 'node:os';
-import type { IOsType } from '../interface/i-os-type';
 
 export class CheckPlatformService implements IOsType {
 	private platform: NodeJS.Platform;

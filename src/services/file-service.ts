@@ -1,11 +1,11 @@
+import { ErrorStatus } from '@/error/enums/error-status';
+import { IOError } from '@/error/io-error';
+import type { IFileService } from '@/interface/i-file-service';
+import { Log } from '@/utils/log';
 import { createWriteStream, type Dirent, type WriteStream } from 'node:fs';
 import { readdir, rm, stat, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Logger } from 'winston';
-import { ErrorStatus } from '../error/enums/error-status';
-import { IOError } from '../error/io-error';
-import type { IFileService } from '../interface/i-file-service';
-import { Log } from '../utils/log';
 
 export class FileService implements IFileService {
 	private logger: Logger;
@@ -114,13 +114,15 @@ export class FileService implements IFileService {
 
 					if (fileStat.isDirectory()) {
 						await rm(fullPath, { recursive: true, force: true });
+						this.logger.info(`Directory ${fullPath} deleted sucessfully`);
 					} else {
 						await unlink(fullPath);
+						this.logger.info(`File ${fullPath} deleted sucessfully`);
 					}
 				})
 			);
 
-			this.logger.info('Directories or files deleted sucessfully');
+			this.logger.warn('Directories or files deleted sucessfully');
 		} catch (err) {
 			if (err instanceof IOError) {
 				throw err;

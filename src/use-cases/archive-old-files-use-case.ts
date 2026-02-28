@@ -1,12 +1,12 @@
+import type { ICompressionService } from '@/interface/i-compression-service';
+import type { IFileService } from '@/interface/i-file-service';
+import type { PathRegistry } from '@/repository/path-registry';
+import type { PathService } from '@/services/path-service';
+import { DateFormatter } from '@/utils/date-formatter';
+import { Log } from '@/utils/log';
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Logger } from 'winston';
-import type { ICompressionService } from '../interface/i-compression-service';
-import type { IFileService } from '../interface/i-file-service';
-import type { PathRegistry } from '../repository/path-registry';
-import type { PathService } from '../services/path-service';
-import { DateFormatter } from '../utils/date-formatter';
-import { Log } from '../utils/log';
 
 export class ArchiveOldFilesUseCase {
 	private readonly MONTHS_TO_KEEP: number = new Date().setMonth(
