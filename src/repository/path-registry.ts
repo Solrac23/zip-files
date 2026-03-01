@@ -1,6 +1,6 @@
-import { ErrorStatus } from '../error/enums/error-status';
-import { IOError } from '../error/io-error';
-import type { PathFile } from '../model/path-file';
+import { ErrorStatus } from '@/error/enums/error-status';
+import { IOError } from '@/error/io-error';
+import type { PathFile } from '@/model/path-file';
 
 export class PathRegistry {
 	private pathFiles: Set<PathFile>;

@@ -1,4 +1,4 @@
-import type { ErrorStatus } from './enums/error-status';
-import { ErrorBase } from './utils/error-base';
+import type { ErrorStatus } from '@/error/enums/error-status';
+import { ErrorBase } from '@/error/utils/error-base';
 
 export class IOError extends ErrorBase<ErrorStatus> {}

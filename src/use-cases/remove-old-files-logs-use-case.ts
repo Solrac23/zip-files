@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/correctness/noUnusedImports: unlink */
+
 import { ErrorStatus } from '@/error/enums/error-status';
 import { IOError } from '@/error/io-error';
 import type { IOsType } from '@/interface/i-os-type';

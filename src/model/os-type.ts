@@ -1,5 +1,5 @@
+import type { IOsType } from '@/interface/i-os-type';
 import { homedir, platform } from 'node:os';
-import type { IOsType } from '../interface/i-os-type';
 
 export class OsType implements IOsType {
 	private osPlatform: NodeJS.Platform;

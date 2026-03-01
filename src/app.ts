@@ -40,6 +40,9 @@ async function main(): Promise<void> {
 	const documentsAbsolutePath = pathService.safeJoin([osHomedir, 'Documents']);
 	pathRegistry.addPathFile(new PathFile(documentsAbsolutePath));
 
+	const programFilesAbsolutePath = '/Documents/meus arquivos/PROGRAMAS';
+	pathRegistry.addPathFile(new PathFile(programFilesAbsolutePath));
+
 	// Iniciar a aplicação conectando dependências usando DIP
 	const archiveUseCase = new ArchiveOldFilesUseCase(
 		pathRegistry,

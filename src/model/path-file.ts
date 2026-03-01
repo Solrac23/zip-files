@@ -1,5 +1,5 @@
-import { ErrorStatus } from '../error/enums/error-status';
-import { IOError } from '../error/io-error';
+import { ErrorStatus } from '@/error/enums/error-status';
+import { IOError } from '@/error/io-error';
 
 export class PathFile {
 	private basePath: string;
