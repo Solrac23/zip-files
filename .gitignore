@@ -4,3 +4,6 @@ node_modules/
 @types/
 logs/**
 dist/**
+sea*.json
+sea*.blob
+sea
