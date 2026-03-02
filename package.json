@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC",
+	"license": "MIT",
 	"packageManager": "pnpm@10.30.3",
 	"devDependencies": {
 		"@biomejs/biome": "2.1.4",
