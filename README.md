@@ -12,38 +12,63 @@ ____
 * [W3 schools - Nodejs OS](https://www.w3schools.com/nodejs/nodejs_os.asp)
 * [W3 schools - Nodejs Streams](https://www.w3schools.com/nodejs/nodejs_streams.asp)
 * [Archiver](https://www.archiverjs.com/docs/quickstart/)
+* [winston](https://www.npmjs.com/package/winston)
 
 ### Pré-requisitos:
-* Node: v22.18.0
-* Npm: 10.9.3
+* Node: v24.14.0
+* Pnpm: 10.30.3
 ___
-### Instruções:
+### Instruções de Instalação e Execução:
 ```bash
 # Clone este repositório
-$ git  clone <https://github.com/Solrac23/zip-files.git>
+$ git clone https://github.com/Solrac23/zip-files.git
 
 # Acesse a pasta do projeto no terminal/cmd
 $ cd zip-files
 
-# Vá para a pasta src
-$ cd src
-
 # Instale as dependências
-$ npm install
+$ pnpm install
 
-# Execute a aplicação
+# Execute a aplicação em modo de desenvolvimento
+$ pnpm dev
 
-$ npm start
+# (Opcional) Gere e execute o build compilado
+$ pnpm build
+$ pnpm start
 ```
 
-Para executar o programa na pasta certa terá que no aruivo principal `app.ts`, adicionar a pasta que deseja zipar os arquivos.
-![initial Path File](./screenshots/image.png)
+### Como configurar as pastas para criar o zip
 
-O `osHomedir` executa a partir da basta raiz do usuário, ou seja, `C:\\User\\<seu usuario>` ou `/home/<seu usuario>`.
+Para definir em quais pastas o programa vai atuar (zipando os arquivos antigos), você deve configurar o arquivo principal `src/app.ts` dentro da função `main()`. 
 
-E nesta linha do código ![Path](./screenshots/image-1.png), o programa pega a pasta que vai executar o serviço.
+Você deve adicionar os caminhos desejados ao `pathRegistry`. O programa utiliza a classe `OsType` para obter o `osHomedir` (diretório raiz do usuário) e a classe `PathService` para unir caminhos de forma segura em diferentes sistemas operacionais.
 
-⚠️**Obs**: Após a finalização do curso este código passaram por uma refatoração.⚠️
+Abra o arquivo [`src/app.ts`](./src/app.ts) e modifique a seção de "Configuração inicial de Estado" com as suas pastas:
+
+```typescript
+// Configuração inicial de Estado
+const osHomedir = osType.getOsHomedir(); // Pega o usuário do sistema, ex: "C:\Users\User" ou "/home/user"
+
+// Exemplo 1: Adicionando a pasta Downloads a partir do Home do Usuário
+const downloadsAbsolutePath = pathService.safeJoin([osHomedir, 'Downloads']);
+pathRegistry.addPathFile(new PathFile(downloadsAbsolutePath));
+
+// Exemplo 2: Adicionando a pasta Documents a partir do Home do Usuário
+const documentsAbsolutePath = pathService.safeJoin([osHomedir, 'Documents']);
+pathRegistry.addPathFile(new PathFile(documentsAbsolutePath));
+
+// Exemplo 3: Utilizando um caminho absoluto (completo) diretamente
+const programFilesAbsolutePath = '/Documents/meus arquivos/PROGRAMAS';
+pathRegistry.addPathFile(new PathFile(programFilesAbsolutePath));
+```
+
+**Resumo passo a passo:**
+1. Crie uma variável que represente o caminho absoluto usando `pathService.safeJoin([osHomedir, 'NOME_DA_SUA_PASTA'])` ou inserindo a string do caminho absoluto diretamente (ex: `C:\\Usuarios\\Carlos\\MinhaPasta`).
+2. Instancie um objeto `PathFile` com a variável criada.
+3. Chame o método `pathRegistry.addPathFile()` passando essa instância.
+
+Feito isso, ao iniciar a aplicação (`pnpm dev` ou `pnpm start`), os diretórios escolhidos serão processados e os arquivos compactados conforme a lógica estabelecida no serviço.
+
 ___
 ### 🛠 Tecnologias
 
