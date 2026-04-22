@@ -1,4 +1,3 @@
-import { ErrorStatus } from '@/error/enums/error-status';
 import { IOError } from '@/error/io-error';
 
 export class PathFile {
@@ -8,12 +7,12 @@ export class PathFile {
 	public constructor(basePath: string) {
 		if (!basePath) {
 			throw new IOError({
-				name: ErrorStatus.INVALID_DIRECTORY,
+				name: 'INVALID_DIRECTORY',
 				message: "basePath can't be empty",
 			});
 		}
 		this.basePath = basePath;
-		this.files = [] as string[];
+		this.files = [];
 	}
 
 	public getBasePath(): Readonly<string> {
