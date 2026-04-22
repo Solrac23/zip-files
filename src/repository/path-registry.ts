@@ -1,4 +1,3 @@
-import { ErrorStatus } from '@/error/enums/error-status';
 import { IOError } from '@/error/io-error';
 import type { PathFile } from '@/model/path-file';
 
@@ -16,7 +15,7 @@ export class PathRegistry {
 	public addPathFile(pathFile: PathFile): void {
 		if (!pathFile) {
 			throw new IOError({
-				name: ErrorStatus.INVALID_PATHFILE,
+				name: 'INVALID_PATHFILE',
 				message: 'PathFile cannot be null or undefined',
 			});
 		}
