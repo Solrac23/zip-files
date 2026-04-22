@@ -1,6 +1,5 @@
 /** biome-ignore-all lint/correctness/noUnusedImports: unlink */
 
-import { ErrorStatus } from '@/error/enums/error-status';
 import { IOError } from '@/error/io-error';
 import type { IOsType } from '@/interface/i-os-type';
 import type { DateFormatter } from '@/utils/date-formatter';
@@ -31,7 +30,7 @@ export class RemoveOldFilesLogsUseCase {
 
 			if (!logPath) {
 				throw new IOError({
-					name: ErrorStatus.DIRECTORY_NOT_FOUND,
+					name: 'DIRECTORY_NOT_FOUND',
 					message: 'Log path not found',
 					cause: logPath,
 				});
@@ -41,7 +40,7 @@ export class RemoveOldFilesLogsUseCase {
 
 			if (!files.length) {
 				throw new IOError({
-					name: ErrorStatus.FILES_NOT_FOUND,
+					name: 'FILES_NOT_FOUND',
 					message: 'Log path not found',
 					cause: logPath,
 				});
