@@ -1,4 +1,3 @@
-import { ErrorStatus } from '@/error/enums/error-status';
 import { IOError } from '@/error/io-error';
 import type { IFileService } from '@/interface/i-file-service';
 import { Log } from '@/utils/log';
@@ -20,7 +19,7 @@ export class FileService implements IFileService {
 	public async readFilesFromDirectory(dir: string): Promise<string[]> {
 		if (!dir) {
 			throw new IOError({
-				name: ErrorStatus.INVALID_DIRECTORY,
+				name: 'INVALID_DIRECTORY',
 				message: 'Directory path is required',
 				cause: dir,
 			});
@@ -34,7 +33,7 @@ export class FileService implements IFileService {
 			});
 		} catch (err) {
 			throw new IOError({
-				name: ErrorStatus.DIRECTORY_NOT_FOUND,
+				name: 'DIRECTORY_NOT_FOUND',
 				message: 'Failed to read directory: '.concat(dir),
 				cause: err instanceof Error ? err.message : String(err),
 			});
@@ -42,7 +41,7 @@ export class FileService implements IFileService {
 
 		if (files.length === 0) {
 			throw new IOError({
-				name: ErrorStatus.DIRECTORY_EMPTY,
+				name: 'DIRECTORY_EMPTY',
 				message: `Directory is empty: ${dir}`,
 			});
 		}
@@ -62,7 +61,7 @@ export class FileService implements IFileService {
 	): Promise<WriteStream> {
 		if (!dir || !fileName) {
 			throw new IOError({
-				name: ErrorStatus.INVALID_FILE_PATH,
+				name: 'INVALID_FILE_PATH',
 				message: 'Directory and file name are required',
 			});
 		}
@@ -76,7 +75,7 @@ export class FileService implements IFileService {
 			return stream;
 		} catch (err) {
 			throw new IOError({
-				name: ErrorStatus.FILE_CREATION_FAILED,
+				name: 'FILE_CREATION_FAILED',
 				message: `Failed to create write stream for: ${fullPath}`,
 				cause: err instanceof Error ? err.message : String(err),
 			});
@@ -93,20 +92,20 @@ export class FileService implements IFileService {
 		dir: string,
 		files: Array<string>
 	): Promise<void> {
-		if (!dir) {
-			throw new IOError({
-				name: ErrorStatus.DIRECTORY_EMPTY,
-				message: 'Directory is not exist or empty',
-			});
-		}
-		if (!files || files.length === 0) {
-			throw new IOError({
-				name: ErrorStatus.FILES_NOT_FOUND,
-				message: `Files not found on directory ${dir}`,
-			});
-		}
-
 		try {
+			if (!dir) {
+				throw new IOError({
+					name: 'DIRECTORY_EMPTY',
+					message: 'Directory is not exist or empty',
+				});
+			}
+			if (!files || files.length === 0) {
+				throw new IOError({
+					name: 'FILES_NOT_FOUND',
+					message: `Files not found on directory ${dir}`,
+				});
+			}
+
 			await Promise.all(
 				files.map(async file => {
 					const fullPath = join(dir, file);
