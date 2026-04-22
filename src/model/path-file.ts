@@ -11,6 +11,17 @@ export class PathFile {
 				message: "basePath can't be empty",
 			});
 		}
+
+		if (
+			(basePath.startsWith('/') && basePath.length <= 1) ||
+			(basePath.startsWith('C:\\') && basePath.length <= 3)
+		) {
+			throw new IOError({
+				name: 'INVALID_DIRECTORY',
+				message: "basePath can't be absolute",
+			});
+		}
+
 		this.basePath = basePath;
 		this.files = [];
 	}
