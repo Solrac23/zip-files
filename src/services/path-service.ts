@@ -1,9 +1,8 @@
-import { ErrorStatus } from '@/error/enums/error-status';
 import { IOError } from '@/error/io-error';
 import type { IOsType } from '@/interface/i-os-type';
 import { Log } from '@/utils/log';
 import { access, constants } from 'node:fs/promises';
-import { isAbsolute, join, sep, win32 } from 'node:path';
+import { isAbsolute, join, posix, win32 } from 'node:path';
 import type { Logger } from 'winston';
 
 export class PathService {
@@ -40,22 +39,22 @@ export class PathService {
 	 * @param paths - O array de caminhos a serem combinados.
 	 * @returns O caminho absoluto resultante.
 	 */
-	public safeJoin(paths: Array<string>): string {
+	public safeJoin(paths: Array<string>): string | never {
 		if (!paths || paths.length === 0) {
 			throw new IOError({
-				name: ErrorStatus.DIRECTORY_NOT_FOUND,
+				name: 'DIRECTORY_NOT_FOUND',
 				message: 'Directory not found',
 			});
 		}
 
 		const isWindows: string =
-			this.osType.getOsPlatform() === 'win32' ? win32.sep : sep;
+			this.osType.getOsPlatform() === 'win32' ? win32.sep : posix.sep;
 		const joinPath: string = join(...paths);
 
 		const pathAbsolute: string = joinPath.split(isWindows).join(isWindows);
 		if (pathAbsolute === '') {
 			throw new IOError({
-				name: ErrorStatus.DIRECTORY_NOT_ABSOLUTE,
+				name: 'DIRECTORY_NOT_ABSOLUTE',
 				message: 'Directory not absolute',
 			});
 		}
