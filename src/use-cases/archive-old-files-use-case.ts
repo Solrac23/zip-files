@@ -74,8 +74,6 @@ export class ArchiveOldFilesUseCase {
 						this.logger.error(err);
 					}
 				}
-				this.logger.info(`${pathFile.getBasePath()}`);
-				this.logger.info('Process completed.\n');
 			} catch (err) {
 				this.logger.error(err);
 			}

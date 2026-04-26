@@ -64,9 +64,9 @@ async function main(): Promise<void> {
 main().catch(err => {
 	const logger = Log.logger();
 	if (err instanceof IOError) {
-		logger.error(`${err.name} ${err.message}`);
+		logger.error(`${err.name}: ${err.message}`);
 	} else if (err instanceof Error) {
-		logger.error(`${err.name} ${err.message}`);
+		logger.error(`${err.name}: ${err.message}`);
 	} else {
 		logger.error(err);
 	}
