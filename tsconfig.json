@@ -1,26 +1,14 @@
 {
 	"$schema": "https://www.schemastore.org/tsconfig",
-	"display": "Node LTS (24)",
+	"display": "Node with TypeScript (TS >=5.8 ONLY)",
+	"docs": [
+		"https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/#path-rewriting-for-relative-paths",
+		"https://devblogs.microsoft.com/typescript/announcing-typescript-5-8-beta/#the---erasablesyntaxonly-option"
+	],
 	"_version": "24.0.0",
 	"compilerOptions": {
-		"lib": [
-			"es2024",
-			"ESNext.Array",
-			"ESNext.Collection",
-			"ESNext.Iterator",
-			"ESNext.Promise"
-		],
-		"module": "nodenext",
-		"target": "es2024",
-		"strict": true,
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"moduleResolution": "node16",
-		"outDir": "./dist",
-		"rootDir": "./src",
-		"baseUrl": "./src",
-		"paths": {
-			"@/*": ["*"]
-		}
+		"rewriteRelativeImportExtensions": true,
+		"erasableSyntaxOnly": true,
+		"verbatimModuleSyntax": true
 	}
 }
