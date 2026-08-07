@@ -16,7 +16,7 @@
 		"@biomejs/biome": "2.1.4",
 		"@types/archiver": "^6.0.4",
 		"@types/node": "^24.13.3",
-		"tsx": "^4.23.5",
+		"tsx": "^4.23.9",
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
