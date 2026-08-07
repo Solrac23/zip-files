@@ -1,12 +1,12 @@
-import type { ICompressionService } from '@/interface/i-compression-service';
-import type { IFileService } from '@/interface/i-file-service';
-import type { PathRegistry } from '@/repository/path-registry';
-import type { PathService } from '@/services/path-service';
-import { DateFormatter } from '@/utils/date-formatter';
-import { Log } from '@/utils/log';
 import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Logger } from 'winston';
+import type { ICompressionService } from '../interface/i-compression-service';
+import type { IFileService } from '../interface/i-file-service';
+import type { PathRegistry } from '../repository/path-registry';
+import type { PathService } from '../services/path-service';
+import { DateFormatter } from '../utils/date-formatter';
+import { Log } from '../utils/log';
 
 export class ArchiveOldFilesUseCase {
 	private readonly MONTHS_TO_KEEP: number = new Date().setMonth(
@@ -26,9 +26,9 @@ export class ArchiveOldFilesUseCase {
 	}
 
 	public async execute(): Promise<void> {
-		const pathFileList = Array.from(this.pathRegistry.getPathFiles());
+		const pathFileList = this.pathRegistry.getPathFiles();
 
-		for (const pathFile of pathFileList) {
+		for (const pathFile of pathFileList.values()) {
 			try {
 				const dir = pathFile.getBasePath();
 
@@ -50,6 +50,7 @@ export class ArchiveOldFilesUseCase {
 					const lastModified = fileStats.mtime;
 
 					if (lastModified.getTime() < this.MONTHS_TO_KEEP) {
+						if (fileName.match(/\.(zip|7z|rar|tar|gz)$/i)) continue;
 						filesToCompress.push(fileName);
 					} else {
 						this.logger.warn(
