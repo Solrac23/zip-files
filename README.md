@@ -15,8 +15,8 @@ ____
 * [winston](https://www.npmjs.com/package/winston)
 
 ### Pré-requisitos:
-* Node: v24.14.0
-* Pnpm: 10.30.3
+* Node: v24.18.0
+* Pnpm: 11.19.0
 ___
 ### Instruções de Instalação e Execução:
 ```bash
