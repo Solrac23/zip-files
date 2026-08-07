@@ -1,4 +1,4 @@
-import { IOError } from '@/error/io-error';
+import { IOError } from '../error/io-error';
 
 export class PathFile {
 	private basePath: string;

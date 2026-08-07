@@ -1,5 +1,5 @@
-import { IOError } from '@/error/io-error';
-import type { PathFile } from '@/model/path-file';
+import { IOError } from '../error/io-error';
+import type { PathFile } from '../model/path-file';
 
 export class PathRegistry {
 	private pathFiles: Set<PathFile>;
