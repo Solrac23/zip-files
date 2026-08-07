@@ -1,10 +1,10 @@
-import { IOError } from '@/error/io-error';
-import type { IFileService } from '@/interface/i-file-service';
-import { Log } from '@/utils/log';
 import { createWriteStream, type Dirent, type WriteStream } from 'node:fs';
 import { readdir, rm, stat, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Logger } from 'winston';
+import { IOError } from '../error/io-error';
+import type { IFileService } from '../interface/i-file-service';
+import { Log } from '../utils/log';
 
 export class FileService implements IFileService {
 	private logger: Logger;
